@@ -1,9 +1,12 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import api from '../services/api';
+import api from '../../services/api';
 
 import AsyncStorage from '@react-native-community/async-storage';
 
 import { Controller, useForm } from 'react-hook-form';
+import { SafeAreaView, ScrollView } from 'react-native';
+
+import { useNavigation } from '@react-navigation/native';
 
 import Icon from 'react-native-vector-icons/Feather';
 
@@ -20,7 +23,7 @@ import {
   TextDescription,
   Img
 } from './styles'
-import { FlatList, SafeAreaView, ScrollView } from 'react-native';
+
 
 interface SearchedRepository {
   newRepo: string;
@@ -36,6 +39,7 @@ interface Repository {
 }
 
 const Dashboard: React.FC = () => {
+  const navigation = useNavigation();
   const [repositories, setRepositories] = useState<Repository[]>([]);
   const { control, handleSubmit, errors } = useForm();
 
@@ -49,6 +53,10 @@ const Dashboard: React.FC = () => {
       console.log(error);
     }
   }, [repositories]);
+
+  const goToRepsitory = useCallback((full_name: string) => {
+    navigation.navigate('Repository', { full_name });
+  }, []);
 
   const onSubmit = useCallback(async (data: SearchedRepository) => {
     const response = await api.get<Repository>(`/repos/${data.newRepo}`);
@@ -108,7 +116,7 @@ const Dashboard: React.FC = () => {
           </Form>
 
           {repositories.map((repo: Repository) => (
-            <RepositoryContainer key={repo.full_name}>
+            <RepositoryContainer key={repo.full_name} onPress={() => goToRepsitory(repo.full_name)}>
               <Img
                 source={{ uri: repo.owner.avatar_url }}
                 style={{ width: 45, height: 45 }}

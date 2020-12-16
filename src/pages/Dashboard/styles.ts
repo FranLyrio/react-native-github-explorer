@@ -38,7 +38,7 @@ export const TextButton = styled.Text`
   color: #ffffff;
 `;
 
-export const RepositoryContainer = styled.View`
+export const RepositoryContainer = styled.TouchableOpacity`
   flex-direction: row;
   background-color: #ffffff;
 
